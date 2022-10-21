@@ -51,6 +51,10 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
         li.nav-item
           a.nav-link(class=(title === 'API Examples') ? 'active' : '')(href='/api') API Examples
         li.nav-item
+          a.nav-link(class=(title === 'All Posts') ? 'active' : '')(href=`/posts/${user._id}`) All Posts
+        li.nav-item
+          a.nav-link(class=(title === 'Add Post') ? 'active' : '')(href='/add') Add Post
+        li.nav-item
           a.nav-link(class=(title === 'Contact') ? 'active' : '')(href='/contact') Contact
 
       form.d-flex
