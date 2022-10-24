@@ -17,5 +17,5 @@ const Post = require('../models/Post');
 exports.getPost = (req, res) => {
     res.render('post', {
         title: 'Find Post'
-    })
+    });
 }

@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1 Add a post
+  form#postForm(method="post" action="/add")
+    div
+      label.d-block Content
+      textarea.d-block#postContent(name="content", cols="120", rows="15")
+      input.d-block(type="submit", value="Submit")
+      input.d-block(type='hidden', name='userId', value=user._id)
+      input.d-block(type='hidden', name='_csrf', value=_csrf)

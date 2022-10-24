@@ -1,4 +1,5 @@
 const Post = require('../models/Post');
+const mongoose = require('mongoose');
 
 /**
  * GET /add
@@ -15,14 +16,18 @@ exports.index = (req, res) => {
  * Uploads a new post from the form
  */
 exports.postAdd = (req, res) => {
-    // todo: save the data to the DB using the Schema
-    /*
+    const {content, userId} = req.body;
     const post = new Post({
-        
+        createdBy: mongoose.Types.ObjectId(userId),
+        content
     });
-    */
-
-    res.render('uploaded', {
-        title: 'Uploaded'
+    post.save((err) => {
+        if (err) {
+            // todo: handle error
+        }
+        res.render('uploaded', {
+            title: 'Uploaded'
+        });
     });
+    //console.log(req.body);
 }
