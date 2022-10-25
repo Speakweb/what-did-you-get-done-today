@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1 Add a post
-  form#postForm(method="post" action="/add")
+  form(method="post" action="/posts")
     div
       label.d-block Content
       textarea.d-block#postContent(name="content", cols="120", rows="15")

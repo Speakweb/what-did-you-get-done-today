@@ -137,10 +137,11 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
-app.get('/posts/:userId', postsController.getAllPosts);
+app.get('/posts', postsController.getAllPosts);
+app.get('/posts/:userId', postsController.getPosts);
 app.get('/posts/:userId/:taskId', postsController.getPost);
+app.post('/posts', postsController.postPosts);
 app.get('/add', addController.index);
-app.post('/add', addController.postAdd);
 
 /**
  * API examples routes.
@@ -242,8 +243,10 @@ app.get('/auth/quickbooks/callback', passport.authorize('quickbooks', { failureR
  */
 if (process.env.NODE_ENV === 'development') {
   // only use in development
+  console.log(process.env.NODE_ENV);
   app.use(errorHandler());
 } else {
+  console.log('t')
   app.use((err, req, res) => {
     console.error(err);
     res.status(500).send('Server Error');

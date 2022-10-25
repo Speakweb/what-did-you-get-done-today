@@ -8,10 +8,10 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 
     const app = require('../app.js');
 
-    describe('GET /add', () => {
+    describe('GET /posts', () => {
         it('should return 200 OK', (done) => {
             request(app)
-            .get('/add')
+            .get('/posts')
             .expect(200, done);
         });
 
@@ -23,9 +23,11 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
         })
     });
 
-    describe('POST /add', () => {
+    describe('POST /posts', () => {
         it('should return 200 OK', (done) => {
-            
+            request(app)
+            .post('/posts')
+            .expect(200, done);
         });
 
         it('should contain the correct post content', (done) => {
