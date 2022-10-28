@@ -14,21 +14,28 @@ exports.getAllPosts = async (req, res) => {
 };
 
 /**
- * GET /posts/${userId}
- * returns a page to which lists all of a user's posts
+ * GET /posts/search
+ * returns a page to which allows user to search for posts
  */
- exports.getPosts = async (req, res) => {
-    
+exports.getPostsSearch = async (req, res) => {
+    res.render('search-posts', {
+        title: 'Search Posts'
+    });
+};
+
+/**
+ * GET /posts/:userId
+ * returns a page to which lists all posts from a single user
+ */
+exports.getPostsFromUser = async (req, res) => {
+
 };
   
 /**
- * GET /posts/${userId}/${taskId}
- * returns a page which shows a single user's post
+ * GET /posts/:userId/:taskId
+ * returns a page which shows a single post from a single user
  */
-exports.getPost = (req, res) => {
-    res.render('post', {
-        title: 'Find Post'
-    });
+exports.getPostFromUser = (req, res) => {
 }
 
 /**
@@ -36,7 +43,7 @@ exports.getPost = (req, res) => {
  * Uploads a new post from the form
  */
 exports.postPosts = (req, res) => {
-    const {content, userId, userName} = req.body;
+    const {content, userId} = req.body;
     const post = new Post({
         createdBy: mongoose.Types.ObjectId(userId),
         content
@@ -51,3 +58,14 @@ exports.postPosts = (req, res) => {
     });
     //console.log(req.body);
 }
+
+/**
+ * function search(form) {
+        const userId = document.getElementsByName("userId")[0].value;
+        const postId = document.getElementsByName("postId")[0].value;
+        form.action = `posts/${userId}${postId && "/" + postId}`;
+        return true;
+      }
+
+          function search(form) { const userId = document.getElementsByName("userId")[0].value; const postId = document.getElementsByName("postId")[0].value; form.action = `${hostBaseUrl}/posts/${userId}${postId && "/" + postId}`; };
+ */

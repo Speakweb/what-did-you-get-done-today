@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  h1 Here are all posts:
+  h1 List of all posts:
   - for (let i = 0; i < allPosts.length; i++)
     div.my-4
       p.m-0.p-0 Created By: #{allPosts[i].createdBy.profile.name || allPosts[i].createdBy._id}

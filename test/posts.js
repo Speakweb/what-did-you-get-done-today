@@ -23,6 +23,51 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
         })
     });
 
+    describe('GET /posts/search', () => {
+        it('should return 200 OK', (done) => {
+            request(app)
+            .get('/posts/search')
+            .expect(200, done);
+        });
+
+        it('should render an HTML page', (done) => {
+            /**
+             * checking to see if the res.render function is called
+             * maybe there is a way to test if the server side rendered content is correct
+             */
+        })
+    });
+
+    describe('GET /posts/:userId', () => {
+        it('should return 200 OK', (done) => {
+            request(app)
+            .get('/posts/:userId')
+            .expect(200, done);
+        });
+
+        it('should render an HTML page', (done) => {
+            /**
+             * checking to see if the res.render function is called
+             * maybe there is a way to test if the server side rendered content is correct
+             */
+        })
+    });
+
+    describe('GET /posts/:userId/:postId', () => {
+        it('should return 200 OK', (done) => {
+            request(app)
+            .get('/posts/:userId/:postId')
+            .expect(200, done);
+        });
+
+        it('should render an HTML page', (done) => {
+            /**
+             * checking to see if the res.render function is called
+             * maybe there is a way to test if the server side rendered content is correct
+             */
+        })
+    });
+
     describe('POST /posts', () => {
         it('should return 200 OK', (done) => {
             request(app)
