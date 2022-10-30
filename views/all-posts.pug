@@ -1,8 +1,22 @@
 extends layout
 
 block content
-  h1 List of all posts:
-  - for (let i = 0; i < allPosts.length; i++)
+  -
+  case queryType
+    when "allPosts"
+      h1 List of all posts:
+    when "allPostsFromUser"
+      h1 List of all posts from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
+    default
+      h1 Post # #{queryPostId} from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
+  -
+  if allPosts
+    for post of allPosts
+      div.my-4
+        p.m-0.p-0 Created By: #{post.createdBy.profile.name || post.createdBy._id}
+        p.m-0.p-0 Content: #{post.content}
+  -
+  if queriedPost
     div.my-4
-      p.m-0.p-0 Created By: #{allPosts[i].createdBy.profile.name || allPosts[i].createdBy._id}
-      p.m-0.p-0 Content: #{allPosts[i].content}
+      p.m-0.p-0 Created By: #{queriedPost.createdBy.profile.name || queriedPost.createdBy._id}
+      p.m-0.p-0 Content: #{queriedPost.content}

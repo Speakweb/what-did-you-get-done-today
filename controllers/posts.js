@@ -1,25 +1,27 @@
 const Post = require('../models/Post');
+const User = require('../models/User');
 const mongoose = require('mongoose');
 
 /**
- * GET /posts/
+ * GET /posts/search
+ * returns a page to which allows user to search for posts
+ */
+ exports.getPostsSearch = async (req, res) => {
+    res.render('search-posts', {
+        title: 'Search Posts'
+    });
+};
+
+/**
+ * GET /posts
  * returns a page to which lists all users' posts
  */
 exports.getAllPosts = async (req, res) => {
     const allPosts = await Post.find({}).populate('createdBy', 'profile.name');
     res.render('all-posts', {
         title: 'All Posts',
-        allPosts
-    });
-};
-
-/**
- * GET /posts/search
- * returns a page to which allows user to search for posts
- */
-exports.getPostsSearch = async (req, res) => {
-    res.render('search-posts', {
-        title: 'Search Posts'
+        allPosts,
+        queryType: 'allPosts'
     });
 };
 
@@ -27,15 +29,39 @@ exports.getPostsSearch = async (req, res) => {
  * GET /posts/:userId
  * returns a page to which lists all posts from a single user
  */
-exports.getPostsFromUser = async (req, res) => {
-
+exports.getAllPostsFromUser = async (req, res) => {
+    const allPostsFromUser = await Post.find({
+        createdBy: mongoose.Types.ObjectId(req.params.userId)
+    }).populate('createdBy', 'profile.name');
+    const queriedUserName = await User.findOne({_id: mongoose.Types.ObjectId(req.params.userId)}, 'profile.name').exec();
+    res.render('all-posts', {
+        title: 'All Posts',
+        allPosts: allPostsFromUser,
+        queryType: 'allPostsFromUser',
+        queriedUserId: req.params.userId,
+        queriedUserName: queriedUserName.profile.name
+    });
 };
-  
+
 /**
  * GET /posts/:userId/:taskId
  * returns a page which shows a single post from a single user
  */
-exports.getPostFromUser = (req, res) => {
+exports.getPostFromUser = async (req, res) => {
+    const postFromUser = await Post.findOne({
+        _id: mongoose.Types.ObjectId(req.params.postId),
+        createdBy: mongoose.Types.ObjectId(req.params.userId)
+    }).populate('createdBy', 'profile.name').exec();
+    const queriedUserName = await User.findOne({_id: mongoose.Types.ObjectId(req.params.userId)}, 'profile.name').exec();
+    console.log(postFromUser);
+    res.render('all-posts', {
+        title: 'All Posts',
+        queriedPost: postFromUser,
+        queryType: 'postFromUser',
+        queriedPostId: req.params.postId,
+        queriedUserId: req.params.userId,
+        queriedUserName: queriedUserName.profile.name
+    });
 }
 
 /**
@@ -56,16 +82,4 @@ exports.postPosts = (req, res) => {
             title: 'Uploaded'
         });
     });
-    //console.log(req.body);
 }
-
-/**
- * function search(form) {
-        const userId = document.getElementsByName("userId")[0].value;
-        const postId = document.getElementsByName("postId")[0].value;
-        form.action = `posts/${userId}${postId && "/" + postId}`;
-        return true;
-      }
-
-          function search(form) { const userId = document.getElementsByName("userId")[0].value; const postId = document.getElementsByName("postId")[0].value; form.action = `${hostBaseUrl}/posts/${userId}${postId && "/" + postId}`; };
- */

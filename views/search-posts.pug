@@ -3,12 +3,12 @@ extends layout
 block content
   h1 Search Posts
   form(onsubmit="return search(this)")
-    label.d-block(for="postId") Search for all posts from a single user by their ID:
-    input.d-block(type="text" name="userId")
+    label.d-block(for="userId") Search for all posts from a single user by their ID:
+    input.d-block#userId(type="text")
     label.d-block(for="postId") Search for a single post from a user by the post ID (leave this blank to see all posts from the user):
-    input.d-block(type="text" name="postId")
+    input.d-block#postId(type="text")
     input.d-block(type="submit" value="Submit")
     input.d-block(type='hidden', name='_csrf', value=_csrf)
 
   script.
-    function search(form) { const userId = document.getElementsByName("userId")[0].value; const postId = document.getElementsByName("postId")[0].value; form.action = `../posts/${userId}${postId && "/" + postId}`; };
+    function search(form) { const userId = document.getElementById("userId").value; const postId = document.getElementById("postId").value; form.action = `../posts/${userId}${postId && "/" + postId}`; };

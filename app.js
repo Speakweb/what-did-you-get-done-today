@@ -139,7 +139,7 @@ app.post('/account/delete', passportConfig.isAuthenticated, userController.postD
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/posts', postsController.getAllPosts);
 app.get('/posts/search', postsController.getPostsSearch);
-app.get('/posts/:userId', postsController.getPostsFromUser);
+app.get('/posts/:userId', postsController.getAllPostsFromUser);
 app.get('/posts/:userId/:taskId', postsController.getPostFromUser);
 app.post('/posts', postsController.postPosts);
 app.get('/add', addController.index);
