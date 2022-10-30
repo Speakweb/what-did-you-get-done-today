@@ -8,7 +8,7 @@ block content
     when "allPostsFromUser"
       h1 List of all posts from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
     default
-      h1 Post # #{queryPostId} from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
+      h1 Post # #{queriedTaskId} from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
   -
   if allPosts
     for post of allPosts

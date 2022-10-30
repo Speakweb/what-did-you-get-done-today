@@ -5,10 +5,9 @@ block content
   form(onsubmit="return search(this)")
     label.d-block(for="userId") Search for all posts from a single user by their ID:
     input.d-block#userId(type="text")
-    label.d-block(for="postId") Search for a single post from a user by the post ID (leave this blank to see all posts from the user):
-    input.d-block#postId(type="text")
+    label.d-block(for="taskId") Search for a single post from a user by the post ID (leave this blank to see all posts from the user):
+    input.d-block#taskId(type="text")
     input.d-block(type="submit" value="Submit")
     input.d-block(type='hidden', name='_csrf', value=_csrf)
-
   script.
-    function search(form) { const userId = document.getElementById("userId").value; const postId = document.getElementById("postId").value; form.action = `../posts/${userId}${postId && "/" + postId}`; };
+    function search(form) { const userId = document.getElementById("userId").value; const taskId = document.getElementById("taskId").value; form.action = `../posts/${userId}${taskId && "/" + taskId}`; };

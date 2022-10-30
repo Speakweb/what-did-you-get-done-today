@@ -49,16 +49,15 @@ exports.getAllPostsFromUser = async (req, res) => {
  */
 exports.getPostFromUser = async (req, res) => {
     const postFromUser = await Post.findOne({
-        _id: mongoose.Types.ObjectId(req.params.postId),
+        _id: mongoose.Types.ObjectId(req.params.taskId),
         createdBy: mongoose.Types.ObjectId(req.params.userId)
     }).populate('createdBy', 'profile.name').exec();
     const queriedUserName = await User.findOne({_id: mongoose.Types.ObjectId(req.params.userId)}, 'profile.name').exec();
-    console.log(postFromUser);
     res.render('all-posts', {
         title: 'All Posts',
         queriedPost: postFromUser,
         queryType: 'postFromUser',
-        queriedPostId: req.params.postId,
+        queriedTaskId: req.params.taskId,
         queriedUserId: req.params.userId,
         queriedUserName: queriedUserName.profile.name
     });
