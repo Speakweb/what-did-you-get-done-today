@@ -31,6 +31,8 @@ const homeController = require('./controllers/home');
 const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
+const postsController = require('./controllers/posts');
+const addController = require('./controllers/add');
 
 /**
  * API keys and Passport configuration.
@@ -135,6 +137,12 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
+app.get('/posts', postsController.getAllPosts);
+app.get('/posts/search', postsController.getPostsSearch);
+app.get('/posts/:userId', postsController.getAllPostsFromUser);
+app.get('/posts/:userId/:taskId', postsController.getPostFromUser);
+app.post('/posts', postsController.postPosts);
+app.get('/add', addController.index);
 
 /**
  * API examples routes.
@@ -236,8 +244,10 @@ app.get('/auth/quickbooks/callback', passport.authorize('quickbooks', { failureR
  */
 if (process.env.NODE_ENV === 'development') {
   // only use in development
+  console.log(process.env.NODE_ENV);
   app.use(errorHandler());
 } else {
+  console.log('t')
   app.use((err, req, res) => {
     console.error(err);
     res.status(500).send('Server Error');
