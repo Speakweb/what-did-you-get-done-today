@@ -5,7 +5,11 @@ const Post = require('../models/Post');
  * Add post page.
  */
 exports.index = (req, res) => {
-    res.render('add', {
-        title: 'Add'   
-    });
-};
+    if (req.user) {
+        res.render('add', {
+            title: 'Add'
+        })
+    } else {
+        res.redirect('/signup')
+    }
+}
