@@ -7,7 +7,7 @@ const Post = require('../models/Post');
 exports.index = (req, res) => {
     if (req.user) {
         res.render('add', {
-            title: 'Add'
+            title: 'Add Post'
         })
     } else {
         res.redirect('/signup')
