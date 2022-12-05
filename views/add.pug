@@ -2,33 +2,27 @@ extends layout
 
 block content
   h1 Add a post
-  p
-    :markdown-it(inline) **BOLD TEXT**
-  p.
-    In the midst of a large amount of plain !{testFunction()}
-    text, suddenly a wild #[:markdown-it(inline) #{gggg}]
-    appeared.
+  - 
+  if markdownPreview
+    p
+      b Markdown Preview:
+    div.d-block.border.rounded !{markdownPreview}
+  form#previewForm(method="post" action="/add/md-preview")
+    button(type="button", onclick="renderMarkdown()") Render Markdown
+    input.d-block(type="hidden", name='mdContent', value="")
+    input.d-block(type='hidden', name='_csrf', value=_csrf)
   form(method="post" action="/posts")
     div
       label.d-block Content
       textarea.d-block(name="content", cols="120", rows="15")
-      p#markdownContent
-      button(type="button", onclick="renderMarkdown()") Render Markdown
       input.d-block(type="submit", value="Submit")
       input.d-block(type='hidden', name='userId', value=user._id)
       input.d-block(type='hidden', name='_csrf', value=_csrf)
   script.
-    //const p = document.getElementById("markdownContent");
-    //p.innerHTML = localStorage.geItem('markdown');
     function renderMarkdown() {
-      //console.log(#{md});
-      //const mdIt = !{markdownIt};
-      const markdownIt = !{require('markdown-it')};
-      const md = new markdownIt();
+      const previewForm = document.getElementById('previewForm');
       const content = document.getElementsByName("content")[0];
-      const markdownContent = md.render(content);
-      console.log(markdownContent, title, md);
-      localStorage.setItem('markdown', markdownContent);
-      const p = document.getElementById("markdownContent");
-      p.innerHTML = markdownContent;
+      const mdContent = document.getElementsByName("mdContent")[0];
+      mdContent.value = content.value;
+      previewForm.submit();
     };

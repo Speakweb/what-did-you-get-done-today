@@ -1,5 +1,5 @@
-//const markdownIt = require('markdown-it');
-//const md = new markdownIt();
+const markdownIt = require('markdown-it');
+const md = new markdownIt();
 
 /**
  * GET /add
@@ -9,7 +9,6 @@ exports.index = (req, res) => {
     if (req.user) {
         res.render('add', {
             title: 'Add',
-            require,
             testFunction: function () {
                 return 'testing'
             }
@@ -17,4 +16,13 @@ exports.index = (req, res) => {
     } else {
         res.redirect('/signup')
     }
+}
+
+exports.mdPreview = (req, res) => {
+    console.log(req.body);
+    const markdownPreview = req.body.mdContent ? md.render(req.body.mdContent) : '';
+    res.render('add', {
+        title: 'Add',
+        markdownPreview
+    })
 }
