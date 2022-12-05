@@ -8,10 +8,7 @@ const md = new markdownIt();
 exports.index = (req, res) => {
     if (req.user) {
         res.render('add', {
-            title: 'Add',
-            testFunction: function () {
-                return 'testing'
-            }
+            title: 'Add Post'
         })
     } else {
         res.redirect('/signup')

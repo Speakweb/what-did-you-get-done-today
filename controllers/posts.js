@@ -16,15 +16,10 @@ const md = new markdownIt();
 
 /**
  * GET /posts
- * returns a page to which lists all users' posts
+ * used to return all posts, now redirects to home ("/") whcih does the same thing
  */
-exports.getAllPosts = async (req, res) => {
-    const allPosts = await Post.find({}).populate('createdBy', 'profile.name');
-    res.render('all-posts', {
-        title: 'All Posts',
-        allPosts,
-        queryType: 'allPosts'
-    });
+exports.getAllPosts = (req, res) => {
+    res.redirect("/")
 };
 
 /**
