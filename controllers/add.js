@@ -1,4 +1,5 @@
-const Post = require('../models/Post');
+//const markdownIt = require('markdown-it');
+//const md = new markdownIt();
 
 /**
  * GET /add
@@ -7,7 +8,11 @@ const Post = require('../models/Post');
 exports.index = (req, res) => {
     if (req.user) {
         res.render('add', {
-            title: 'Add'
+            title: 'Add',
+            require,
+            testFunction: function () {
+                return 'testing'
+            }
         })
     } else {
         res.redirect('/signup')
