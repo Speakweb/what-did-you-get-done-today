@@ -1,6 +1,8 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
 const mongoose = require('mongoose');
+const markdownIt = require('markdown-it');
+const md = new markdownIt();
 
 /**
  * GET /posts/search
@@ -90,7 +92,7 @@ exports.postPosts = (req, res) => {
     const {content, userId} = req.body;
     const post = new Post({
         createdBy: mongoose.Types.ObjectId(userId),
-        content
+        content: md.render(content),
     });
     post.save((err) => {
         if (err) {

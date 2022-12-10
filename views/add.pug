@@ -2,6 +2,15 @@ extends layout
 
 block content
   h1 Add a post
+  - 
+  if markdownPreview
+    p
+      b Markdown Preview:
+    div.d-block.border.rounded !{markdownPreview}
+  form#previewForm(method="post" action="/add/md-preview")
+    button(type="button", onclick="renderMarkdown()") Render Markdown
+    input.d-block(type="hidden", name='mdContent', value="")
+    input.d-block(type='hidden', name='_csrf', value=_csrf)
   form(method="post" action="/posts")
     div
       label.d-block Content
@@ -9,3 +18,11 @@ block content
       input.d-block(type="submit", value="Submit")
       input.d-block(type='hidden', name='userId', value=user._id)
       input.d-block(type='hidden', name='_csrf', value=_csrf)
+  script.
+    function renderMarkdown() {
+      const previewForm = document.getElementById('previewForm');
+      const content = document.getElementsByName("content")[0];
+      const mdContent = document.getElementsByName("mdContent")[0];
+      mdContent.value = content.value;
+      previewForm.submit();
+    };

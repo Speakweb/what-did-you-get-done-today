@@ -144,6 +144,7 @@ app.get('/posts/:userId/:taskId', postsController.getPostFromUser);
 app.post('/posts', postsController.postPosts);
 app.get('/profile', postsController.getAllPostsFromCurrentUser);
 app.get('/add', addController.index);
+app.post('/add/md-preview', addController.mdPreview);
 
 /**
  * API examples routes.
@@ -248,7 +249,6 @@ if (process.env.NODE_ENV === 'development') {
   console.log(process.env.NODE_ENV);
   app.use(errorHandler());
 } else {
-  console.log('t')
   app.use((err, req, res) => {
     console.error(err);
     res.status(500).send('Server Error');
