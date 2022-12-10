@@ -7,6 +7,8 @@ block content
       h1 List of all posts:
     when "allPostsFromUser"
       h1 List of all posts from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
+    when "allPostsFromCurrentUser"
+      h1 List of all your posts:
     default
       h1 Post # #{queriedTaskId} from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
   -
