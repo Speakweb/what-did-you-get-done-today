@@ -142,6 +142,7 @@ app.get('/posts/search', postsController.getPostsSearch);
 app.get('/posts/:userId', postsController.getAllPostsFromUser);
 app.get('/posts/:userId/:taskId', postsController.getPostFromUser);
 app.post('/posts', postsController.postPosts);
+app.get('/profile', postsController.getAllPostsFromCurrentUser);
 app.get('/add', addController.index);
 app.post('/add/md-preview', addController.mdPreview);
 

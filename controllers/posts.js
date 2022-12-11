@@ -41,6 +41,30 @@ exports.getAllPostsFromUser = async (req, res) => {
 };
 
 /**
+ * GET /profile
+ * returns a page which shows all the posts form the user that is currently logged in
+ */
+
+exports.getAllPostsFromCurrentUser = async (req, res) => {
+    if (req.user) {
+        const allPostsFromUser = await Post.find({
+            createdBy: mongoose.Types.ObjectId(req.user._id)
+        }).populate('createdBy', 'profile.name');
+        const queriedUserName = await User.findOne({_id: req.user._id}, 'profile.name').exec()
+        console.log(queriedUserName.profile)
+        res.render('all-posts', {
+            title: 'Profile',
+            allPosts: allPostsFromUser,
+            queryType: 'allPostsFromCurrentUser',
+            queriedUserId: req.user._id,
+            queriedUserName: queriedUserName.profile.name
+        })
+    } else {
+        res.redirect("/")
+    }
+};
+
+/**
  * GET /posts/:userId/:taskId
  * returns a page which shows a single post from a single user
  */
