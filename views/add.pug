@@ -2,22 +2,23 @@ extends layout
 
 block content
   h1 Add a post
-  - 
-  if markdownPreview
-    p
-      b Markdown Preview:
-    div.d-block.border.rounded !{markdownPreview}
-  form#previewForm(method="post" action="/add/md-preview")
-    button(type="button", onclick="renderMarkdown()") Render Markdown
-    input.d-block(type="hidden", name='mdContent', value="")
-    input.d-block(type='hidden', name='_csrf', value=_csrf)
-  form(method="post" action="/posts")
-    div
-      label.d-block Content
-      textarea.d-block(name="content", cols="120", rows="15")
-      input.d-block(type="submit", value="Submit")
-      input.d-block(type='hidden', name='userId', value=user._id)
+  div(style="width: 1000px")
+    form.d-block.mx-auto#previewForm(method="post", action="/add/md-preview", style="width: 170px")
+      button.mb-2(type="button", onclick="renderMarkdown()") Preview Markdown
+      input.d-block(type="hidden", name='mdContent', value="")
       input.d-block(type='hidden', name='_csrf', value=_csrf)
+    div.d-flex.justify-content-start
+      form(method="post", action="/posts" style="width: 490px")
+        textarea.d-block.border.border-dark(name="content", style="width: 490px; height: 350px", placeholder="Type something here...") #{previewContent}
+        input.d-block.mt-4(type="submit", value="Submit")
+        input(type='hidden', name='userId', value=user._id)
+        input(type='hidden', name='_csrf', value=_csrf)
+      -
+      if markdownPreview
+        div.border.border-dark.p-1(style="width: 490px; height: 350px") !{markdownPreview}
+      else
+        div.border.border-dark.p-1(style="width: 490px; height: 350px")
+          i Markdown preview is shown here
   script.
     function renderMarkdown() {
       const previewForm = document.getElementById('previewForm');
