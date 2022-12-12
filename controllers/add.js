@@ -16,10 +16,11 @@ exports.index = (req, res) => {
 }
 
 exports.mdPreview = (req, res) => {
-    console.log(req.body);
-    const markdownPreview = req.body.mdContent ? md.render(req.body.mdContent) : '';
+    const previewContent = req.body.mdContent;
+    const markdownPreview = md.render(previewContent) || previewContent;
     res.render('add', {
         title: 'Add',
-        markdownPreview
+        markdownPreview,
+        previewContent
     })
 }

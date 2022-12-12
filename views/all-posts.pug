@@ -16,9 +16,11 @@ block content
     for post of allPosts
       div.my-4
         p.m-0.p-0 Created By: #{post.createdBy.profile.name || post.createdBy._id}
-        p.m-0.p-0 Content: !{post.content}
+        p.m-0.p-0 Content:
+        div !{post.content}
   -
   if queriedPost
     div.my-4
       p.m-0.p-0 Created By: #{queriedPost.createdBy.profile.name || queriedPost.createdBy._id}
-      p.m-0.p-0 Content: !{queriedPost.content}
+      p.m-0.p-0 Content:
+      div !{queriedPost.content}
