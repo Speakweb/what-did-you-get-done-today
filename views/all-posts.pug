@@ -24,3 +24,16 @@ block content
       p.m-0.p-0 Created By: #{queriedPost.createdBy.profile.name || queriedPost.createdBy._id}
       p.m-0.p-0 Content:
       div !{queriedPost.content}
+  form.d-flex#changePageForm(method="post", style="width: 490px")
+    label Page #{pageNum}
+    input.d-block(type='hidden', name='_csrf', value=_csrf)
+    button(type="button", onclick="changePage('prev')") &#8249;
+    button(type="button", onclick="changePage('next')") &#8250;
+  script.
+    function changePage(pageChangeAction) {
+      const pageNum = #{pageNum};
+      const changePageForm = document.getElementById('changePageForm');
+      const page = pageChangeAction === 'next' ? pageNum + 1 : pageNum - 1;
+      changePageForm.action = page > 0 ? `/?page=${page}` : '/';
+      changePageForm.submit();
+    }
