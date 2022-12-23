@@ -10,4 +10,8 @@ block content
     input.d-block(type="submit" value="Submit")
     input.d-block(type='hidden', name='_csrf', value=_csrf)
   script.
-    function search(form) { const userId = document.getElementById("userId").value; const taskId = document.getElementById("taskId").value; form.action = `../posts/${userId}${taskId && "/" + taskId}`; };
+    function search(form) {
+      const userId = document.getElementById("userId").value;
+      const taskId = document.getElementById("taskId").value;
+      form.action = `../posts/${userId}${taskId && "/" + taskId}`;
+    };

@@ -2,38 +2,46 @@ extends layout
 
 block content
   -
-  case queryType
-    when "allPosts"
-      h1 List of all posts:
-    when "allPostsFromUser"
-      h1 List of all posts from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
-    when "allPostsFromCurrentUser"
-      h1 List of all your posts:
-    default
-      h1 Post # #{queriedTaskId} from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
-  -
-  if allPosts
-    for post of allPosts
-      div.my-4
-        p.m-0.p-0 Created By: #{post.createdBy.profile.name || post.createdBy._id}
+  .position-relative.w-75
+    case queryType
+      when "allPosts"
+        h1 List of all posts:
+      when "allPostsFromUser"
+        h1 List of all posts from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
+      when "allPostsFromCurrentUser"
+        h1 List of all your posts:
+      default
+        h1 Post # #{queriedTaskId} from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
+    -
+    if allPosts
+      for post of allPosts
+        .my-4.w-75(style="overflow-wrap: break-word")
+          p.m-0.p-0 Created By: #{post.createdBy.profile.name || post.createdBy._id}
+          p.m-0.p-0 Content:
+          div !{post.content}
+    -
+    if queriedPost
+      .my-4.w-75(style="overflow-wrap: break-word")
+        p.m-0.p-0 Created By: #{queriedPost.createdBy.profile.name || queriedPost.createdBy._id}
         p.m-0.p-0 Content:
-        div !{post.content}
-  -
-  if queriedPost
-    div.my-4
-      p.m-0.p-0 Created By: #{queriedPost.createdBy.profile.name || queriedPost.createdBy._id}
-      p.m-0.p-0 Content:
-      div !{queriedPost.content}
-  form.d-flex#changePageForm(method="post", style="width: 490px")
-    label Page #{pageNum}
-    input.d-block(type='hidden', name='_csrf', value=_csrf)
-    button(type="button", onclick="changePage('prev')") &#8249;
-    button(type="button", onclick="changePage('next')") &#8250;
+        div !{queriedPost.content}
+    -
+    if multiplePages
+      form.position-absolute.end-0.bottom-0#changePageForm(method="post" style="width: 70px")
+        label Page !{pageNum}
+        input.d-block(type='hidden', name='_csrf', value=_csrf)
+        .d-flex.justify-content-sm-between
+          -
+          if pageNum > 1
+            button.fw-bold(type="button", onclick="changePage('prev')", style="width: 30px;") &#8249;
+          if !lastPage
+            button.fw-bold(type="button", onclick="changePage('next')", style="width: 30px;") &#8250;
   script.
     function changePage(pageChangeAction) {
+      const url = '#{url}';
       const pageNum = #{pageNum};
       const changePageForm = document.getElementById('changePageForm');
       const page = pageChangeAction === 'next' ? pageNum + 1 : pageNum - 1;
-      changePageForm.action = page > 0 ? `/?page=${page}` : '/';
+      changePageForm.action = page > 0 ? `${url}?page=${page}` : url;
       changePageForm.submit();
     }
