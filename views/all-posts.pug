@@ -37,9 +37,23 @@ block content
           if !lastPage
             button.fw-bold(type="button", onclick="changePage('next')", style="width: 30px;") &#8250;
   script.
+    const pageNum = #{pageNum};
+    const multiplePages = #{multiplePages};
+    const lastPage = #{lastPage};
+    const url = '#{url}';
+    document.onkeydown = function(e) {
+      switch (e.keyCode) {
+        case 37:
+          if (pageNum > 1) changePage('prev');
+          break;
+        case 39:
+          if (!lastPage) changePage('next');
+          break;
+      }
+    };
     function changePage(pageChangeAction) {
-      const url = '#{url}';
-      const pageNum = #{pageNum};
+      //const url = '#{url}';
+      //const pageNum = #{pageNum};
       const changePageForm = document.getElementById('changePageForm');
       const page = pageChangeAction === 'next' ? pageNum + 1 : pageNum - 1;
       changePageForm.action = page > 0 ? `${url}?page=${page}` : url;
