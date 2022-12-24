@@ -14,8 +14,6 @@ exports.index = async (req, res) => {
   const numOfPosts = await Post.count({});
   const lastPage = allPosts.length < 5 || (Math.floor(numOfPosts/(5*(pageNum+1))) === 1 && numOfPosts%5*(pageNum+1) === 0); 
   const multiplePages = numOfPosts > 5;
-  console.log('pageNum:'+pageNum, 'postIndex:'+postIndex, 'quotient:'+(Math.floor(numOfPosts/(5*(pageNum+1)))), 'numOfPosts:'+numOfPosts,
-  'lastPage:'+lastPage);
   res.render('all-posts', {
     title: 'Home',
     allPosts,
