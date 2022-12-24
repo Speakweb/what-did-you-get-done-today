@@ -23,33 +23,49 @@ exports.getAllPosts = (req, res) => {
 };
 
 /**
- * GET /posts/:userId
+ * GET and POST /posts/:userId
  * returns a page to which lists all posts from a single user
  */
 exports.getAllPostsFromUser = async (req, res) => {
+    const url = req.baseUrl + req.path; // url without params
+    const pageNum = req.query.page ? parseInt(req.query.page) - 1 : 0;
+    const postIndex = 5 * pageNum;
     const allPostsFromUser = await Post.find({
         createdBy: mongoose.Types.ObjectId(req.params.userId)
-    }).populate('createdBy', 'profile.name');
+    }).populate('createdBy', 'profile.name').skip(postIndex).limit(5);
+    const numOfPosts = await Post.count({ createdBy: mongoose.Types.ObjectId(req.params.userId) });
+    const lastPage = allPostsFromUser.length < 5 || (Math.floor(numOfPosts/(5*(pageNum+1))) === 1 && numOfPosts%5*(pageNum+1) === 0);
+    const multiplePages = numOfPosts > 5;
     const queriedUserName = await User.findOne({_id: mongoose.Types.ObjectId(req.params.userId)}, 'profile.name').exec();
     res.render('all-posts', {
         title: 'All Posts',
         allPosts: allPostsFromUser,
         queryType: 'allPostsFromUser',
         queriedUserId: req.params.userId,
-        queriedUserName: queriedUserName.profile.name
+        queriedUserName: queriedUserName.profile.name,
+        pageNum: pageNum + 1,
+        url,
+        multiplePages,
+        lastPage
     });
 };
 
 /**
- * GET /profile
+ * GET and POST /profile
  * returns a page which shows all the posts form the user that is currently logged in
  */
 
 exports.getAllPostsFromCurrentUser = async (req, res) => {
     if (req.user) {
+        const url = req.baseUrl + req.path; // url without params
+        const pageNum = req.query.page ? parseInt(req.query.page) - 1 : 0;
+        const postIndex = 5 * pageNum;
         const allPostsFromUser = await Post.find({
             createdBy: mongoose.Types.ObjectId(req.user._id)
-        }).populate('createdBy', 'profile.name');
+        }).populate('createdBy', 'profile.name').skip(postIndex).limit(5);
+        const numOfPosts = await Post.count({ createdBy: mongoose.Types.ObjectId(req.user._id) });
+        const lastPage = allPostsFromUser.length < 5 || (Math.floor(numOfPosts/(5*(pageNum+1))) === 1 && numOfPosts%5*(pageNum+1) === 0);
+        const multiplePages = numOfPosts > 5;
         const queriedUserName = await User.findOne({_id: req.user._id}, 'profile.name').exec()
         console.log(queriedUserName.profile)
         res.render('all-posts', {
@@ -57,7 +73,11 @@ exports.getAllPostsFromCurrentUser = async (req, res) => {
             allPosts: allPostsFromUser,
             queryType: 'allPostsFromCurrentUser',
             queriedUserId: req.user._id,
-            queriedUserName: queriedUserName.profile.name
+            queriedUserName: queriedUserName.profile.name,
+            pageNum: pageNum + 1,
+            url,
+            multiplePages,
+            lastPage
         })
     } else {
         res.redirect("/")
@@ -65,7 +85,7 @@ exports.getAllPostsFromCurrentUser = async (req, res) => {
 };
 
 /**
- * GET /posts/:userId/:taskId
+ * GET and POST /posts/:userId/:taskId
  * returns a page which shows a single post from a single user
  */
 exports.getPostFromUser = async (req, res) => {
@@ -80,7 +100,8 @@ exports.getPostFromUser = async (req, res) => {
         queryType: 'postFromUser',
         queriedTaskId: req.params.taskId,
         queriedUserId: req.params.userId,
-        queriedUserName: queriedUserName.profile.name
+        queriedUserName: queriedUserName.profile.name,
+        multiplePages: false
     });
 }
 

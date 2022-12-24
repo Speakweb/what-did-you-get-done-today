@@ -119,6 +119,7 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
  * Primary app routes.
  */
 app.get('/', homeController.index);
+app.post('/', homeController.index)
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
@@ -140,9 +141,12 @@ app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userControl
 app.get('/posts', postsController.getAllPosts);
 app.get('/posts/search', postsController.getPostsSearch);
 app.get('/posts/:userId', postsController.getAllPostsFromUser);
+app.post('/posts/:userId', postsController.getAllPostsFromUser);
 app.get('/posts/:userId/:taskId', postsController.getPostFromUser);
+app.post('/posts/:userId/:taskId', postsController.getPostFromUser);
 app.post('/posts', postsController.postPosts);
 app.get('/profile', postsController.getAllPostsFromCurrentUser);
+app.post('/profile', postsController.getAllPostsFromCurrentUser);
 app.get('/add', addController.index);
 app.post('/add/md-preview', addController.mdPreview);
 
