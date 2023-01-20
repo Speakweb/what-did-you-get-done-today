@@ -117,10 +117,8 @@ exports.postPosts = (req, res) => {
     });
     post.save((err) => {
         if (err) {
-            // todo: handle error
+            console.log("\n" + "post save error: " + err + "\n")
         }
-        res.render('uploaded', {
-            title: 'Uploaded'
-        });
     });
+    res.redirect('/');
 }
