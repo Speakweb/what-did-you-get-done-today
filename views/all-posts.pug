@@ -15,13 +15,14 @@ block content
     -
     if allPosts
       for post of allPosts
-        .my-4.w-75(style="overflow-wrap: break-word")
+        .position-relative.my-4.p-1.w-75.border.border-dark.border-2(id=post._id, style="overflow-wrap: break-word;", onmouseover=`onPostHover('over', '${post._id}');`, onmouseout=`onPostHover('out', '${post._id}');`)
           p.m-0.p-0 Created By: #{post.createdBy.profile.name || post.createdBy._id}
           p.m-0.p-0 Content:
           div !{post.content}
+          button.like-button.position-absolute.top-0.end-0() &#129293;
     -
     if queriedPost
-      .my-4.w-75(style="overflow-wrap: break-word")
+      .position-relative.my-4.p-1.w-75.border.border-dark.border-2(id=post._id, style="overflow-wrap: break-word", onmouseover=`onPostHover('over', '${post._id}');`, onmouseout=`onPostHover('out', '${post._id}');`)
         p.m-0.p-0 Created By: #{queriedPost.createdBy.profile.name || queriedPost.createdBy._id}
         p.m-0.p-0 Content:
         div !{queriedPost.content}
@@ -52,10 +53,19 @@ block content
       }
     };
     function changePage(pageChangeAction) {
-      //const url = '#{url}';
-      //const pageNum = #{pageNum};
       const changePageForm = document.getElementById('changePageForm');
       const page = pageChangeAction === 'next' ? pageNum + 1 : pageNum - 1;
       changePageForm.action = page > 0 ? `${url}?page=${page}` : url;
       changePageForm.submit();
+    };
+    function onPostHover(mouseEvent, postId) {
+      const postDiv = document.getElementById(postId);
+      const likeButton = postDiv.getElementsByClassName("like-button")[0];
+      //console.log(likeButton);
+      //console.log(mouseEvent, postId);
+      if (mouseEvent === 'over') {
+        likeButton.innerHTML = '&#129505;';
+      } else {
+        likeButton.innerHTML = '&#129293;';
+      }
     }
