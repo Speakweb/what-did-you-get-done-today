@@ -30,9 +30,10 @@ exports.getAllPostsFromUser = async (req, res) => {
     const url = req.baseUrl + req.path; // url without params
     const pageNum = req.query.page ? parseInt(req.query.page) - 1 : 0;
     const postIndex = 5 * pageNum;
-    const allPostsFromUser = await Post.find({
+    const queriedPosts = await Post.find({
         createdBy: mongoose.Types.ObjectId(req.params.userId)
     }).populate('createdBy', 'profile.name').skip(postIndex).limit(5);
+    const allPostsFromUser = JSON.parse(JSON.stringify(queriedPosts));
     const numOfPosts = await Post.count({ createdBy: mongoose.Types.ObjectId(req.params.userId) });
     const lastPage = allPostsFromUser.length < 5 || (Math.floor(numOfPosts/(5*(pageNum+1))) === 1 && numOfPosts%5*(pageNum+1) === 0);
     const multiplePages = numOfPosts > 5;
@@ -60,9 +61,10 @@ exports.getAllPostsFromCurrentUser = async (req, res) => {
         const url = req.baseUrl + req.path; // url without params
         const pageNum = req.query.page ? parseInt(req.query.page) - 1 : 0;
         const postIndex = 5 * pageNum;
-        const allPostsFromUser = await Post.find({
+        const queriedPosts = await Post.find({
             createdBy: mongoose.Types.ObjectId(req.user._id)
         }).populate('createdBy', 'profile.name').skip(postIndex).limit(5);
+        const allPostsFromUser = JSON.parse(JSON.stringify(queriedPosts));
         const numOfPosts = await Post.count({ createdBy: mongoose.Types.ObjectId(req.user._id) });
         const lastPage = allPostsFromUser.length < 5 || (Math.floor(numOfPosts/(5*(pageNum+1))) === 1 && numOfPosts%5*(pageNum+1) === 0);
         const multiplePages = numOfPosts > 5;
@@ -89,19 +91,22 @@ exports.getAllPostsFromCurrentUser = async (req, res) => {
  * returns a page which shows a single post from a single user
  */
 exports.getPostFromUser = async (req, res) => {
-    const postFromUser = await Post.findOne({
+    const queriedPost = await Post.findOne({
         _id: mongoose.Types.ObjectId(req.params.taskId),
         createdBy: mongoose.Types.ObjectId(req.params.userId)
     }).populate('createdBy', 'profile.name').exec();
+    const postFromUser = JSON.parse(JSON.stringify(queriedPost));
     const queriedUserName = await User.findOne({_id: mongoose.Types.ObjectId(req.params.userId)}, 'profile.name').exec();
     res.render('all-posts', {
         title: 'All Posts',
         queriedPost: postFromUser,
         queryType: 'postFromUser',
+        pageNum: 1,
         queriedTaskId: req.params.taskId,
         queriedUserId: req.params.userId,
         queriedUserName: queriedUserName.profile.name,
-        multiplePages: false
+        multiplePages: false,
+        lastPage: true
     });
 }
 
@@ -121,4 +126,28 @@ exports.postPosts = (req, res) => {
         }
     });
     res.redirect('/');
+}
+
+/**
+ * POST /posts/like/:postId
+ */
+exports.likePost = async (req, res) => {
+    if (!req.user) return res.end(); // todo: give warning that user is not logged in?
+    const userId = req.user._id.toString();
+    const filter = { _id: mongoose.Types.ObjectId(req.params.postId) };
+    const post = await Post.findOne(filter);
+    if (post.likes) {
+        const likes = JSON.parse(JSON.stringify(post.likes));
+        const userLiked = likes[userId] ? !likes[userId] : true;
+        await Post.updateOne(filter, {
+            likes: {
+                ...likes,
+                [userId]: userLiked
+            }
+        });
+    }
+    else {
+        await Post.updateOne(filter, { likes: { [userId]: true } });
+    }
+    res.redirect(req.get('referer')); // reload current page to show updated post "like" state
 }
