@@ -11,9 +11,10 @@ block content
         h1 List of all your posts:
       default
         h1 Post # #{queriedTaskId} from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
+    - var userId = user ? user._id : '';
+    - var loggedIn = user ? true : false; 
     if allPosts
       for post of allPosts
-        - var userId = user ? user._id : '';  
         - var likes = post.likes ? post.likes : {};
         - var userLiked = likes?.[userId] || false;
         - var likesArray = Object.keys(likes);
@@ -37,13 +38,12 @@ block content
             label.mx-1 !{numOfLikes} !{numOfLikes === 1 ? 'like' : 'likes'}
             button.like-button(
               type="button"
-              onclick=`onLikeClick('${post._id}', ${numOfLikes}, ${userLiked});`
+              onclick=`${loggedIn} ? onLikeClick('${post._id}', ${numOfLikes}, ${userLiked}) : loginPrompt()`
               onmouseover=`onLikeHover('over', '${post._id}', ${userLiked});`
               onmouseout=`onLikeHover('out', '${post._id}', ${userLiked});`
             ) !{likeButtonState}
             input.d-block(type='hidden', name='_csrf', value=_csrf)
     if queriedPost
-      - var userId = user ? user._id : '';  
       - var likes = queriedPost.likes ? queriedPost.likes : {};
       - var userLiked = likes?.[userId] || false;
       - var likesArray = Object.keys(likes);
@@ -67,7 +67,7 @@ block content
             label.mx-1 !{numOfLikes} !{numOfLikes === 1 ? 'like' : 'likes'}
             button.like-button(
               type="button"
-              onclick=`onLikeClick('${queriedPost._id}', ${numOfLikes}, ${userLiked});`
+              onclick=`${loggedIn} ? onLikeClick('${queriedPost._id}', ${numOfLikes}, ${userLiked}) : loginPrompt()`
               onmouseover=`onLikeHover('over', '${queriedPost._id}', ${userLiked});`
               onmouseout=`onLikeHover('out', '${queriedPost._id}', ${userLiked});`
             ) !{likeButtonState}
@@ -87,9 +87,6 @@ block content
     const multiplePages = #{multiplePages};
     const lastPage = #{lastPage};
     const url = '#{url}';
-    //let updatedUserLiked = false;
-    //let likeButtonHoverCount = 0;
-    //let likeButtonId = '';
     document.onkeydown = function(e) {
       switch (e.keyCode) {
         case 37:
@@ -109,11 +106,6 @@ block content
     function onLikeHover(mouseEvent, postId, userLiked) {
       const likeForm = document.getElementById(`likeForm-${postId}`);
       const likeButton = likeForm.getElementsByClassName("like-button")[0];
-      //console.log(userLiked);
-      //likeButtonId = postId;
-      //updatedUserLiked = likeButtonHoverCount === 0 && likeButtonId === postId ? userLiked : updatedUserLiked;
-      //console.log(likeButtonId === postId);
-      //likeButtonHoverCount = likeButtonId === postId ? likeButtonHoverCount++ : 0;
       if (mouseEvent === 'over') {
         likeButton.innerHTML = userLiked ? '&#129293;' : '&#129505;';
       } else {
@@ -123,9 +115,10 @@ block content
     function reloadPage() {
       window.location.reload();
     };
+    function loginPrompt() {
+      alert('You must be logged in to like a post.')
+    }
     function onLikeClick(postId, numOfLikes, userLiked) {
-      // todo: fix single queried post(s) like function
-      // cause by route of form action being incorrect
       const likeForm = document.getElementById(`likeForm-${postId}`);
       const likeButton = likeForm.getElementsByClassName("like-button")[0];
       const totalLikesLabel = likeForm.getElementsByTagName("label")[0];
@@ -133,6 +126,6 @@ block content
       likeButton.innerHTML = userLiked ? '&#129505;' : '&#129293;';
       updatedUserLiked = !userLiked;
       totalLikesLabel.innerHTML = `${newNumOfLikes} ${newNumOfLikes === 1 ? 'like' : 'likes'}`;
-      likeForm.action = `posts/like/${postId}/`;
+      likeForm.action = window.location.origin + `/posts/like/${postId}/`;
       likeForm.submit();
     }

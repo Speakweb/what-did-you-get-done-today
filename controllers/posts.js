@@ -69,7 +69,6 @@ exports.getAllPostsFromCurrentUser = async (req, res) => {
         const lastPage = allPostsFromUser.length < 5 || (Math.floor(numOfPosts/(5*(pageNum+1))) === 1 && numOfPosts%5*(pageNum+1) === 0);
         const multiplePages = numOfPosts > 5;
         const queriedUserName = await User.findOne({_id: req.user._id}, 'profile.name').exec()
-        console.log(queriedUserName.profile)
         res.render('all-posts', {
             title: 'Profile',
             allPosts: allPostsFromUser,
@@ -149,5 +148,5 @@ exports.likePost = async (req, res) => {
     else {
         await Post.updateOne(filter, { likes: { [userId]: true } });
     }
-    res.redirect(req.get('referer')); // reload current page to show updated post "like" state
+    res.redirect(req.get('referer')); // reloads current page to show updated post "like" state
 }
