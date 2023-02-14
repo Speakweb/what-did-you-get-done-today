@@ -13,12 +13,8 @@ block content
         input.d-block.mt-4(type="submit", value="Submit")
         input(type='hidden', name='userId', value=user._id)
         input(type='hidden', name='_csrf', value=_csrf)
-      -
-      if markdownPreview
-        div.border.border-dark.p-1(style="width: 490px; height: 350px") !{markdownPreview}
-      else
-        div.border.border-dark.p-1(style="width: 490px; height: 350px")
-          i Markdown preview is shown here
+      - var markdownPreviewContent = markdownPreview ? markdownPreview : "<i>Markdown preview is shown here<i>";
+      div.border.border-dark.p-1(style="width: 490px; height: 350px") !{markdownPreviewContent}
   script.
     function renderMarkdown() {
       const previewForm = document.getElementById('previewForm');

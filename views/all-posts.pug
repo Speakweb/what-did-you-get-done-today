@@ -1,7 +1,6 @@
 extends layout
 
 block content
-  -
   .position-relative.w-75
     case queryType
       when "allPosts"
@@ -12,30 +11,77 @@ block content
         h1 List of all your posts:
       default
         h1 Post # #{queriedTaskId} from #{queriedUserName ? queriedUserName : 'user # ' + queriedUserId}:
-    -
+    - var userId = user ? user._id : '';
+    - var loggedIn = user ? true : false; 
     if allPosts
       for post of allPosts
-        .my-4.w-75(style="overflow-wrap: break-word")
+        - var likes = post.likes ? post.likes : {};
+        - var userLiked = likes?.[userId] || false;
+        - var likesArray = Object.keys(likes);
+        - var numOfLikes = 0;
+        - var likeButtonState = userLiked ? '&#129505;' : '&#129293;';
+        for userLike in likesArray
+          if likes[userLike]
+            - numOfLikes = numOfLikes + 1
+        .position-relative.my-4.p-1.w-75.border.border-dark.border-2(
+          id=post._id
+          style="overflow-wrap: break-word;"
+        )
           p.m-0.p-0 Created By: #{post.createdBy.profile.name || post.createdBy._id}
           p.m-0.p-0 Content:
           div !{post.content}
-    -
+          form.position-absolute.bottom-0.end-0(
+            id=`likeForm-${post._id}`
+            method="post"
+            target="hidden-frame"
+          )
+            label.mx-1 !{numOfLikes} !{numOfLikes === 1 ? 'like' : 'likes'}
+            button.like-button(
+              type="button"
+              onclick=`${loggedIn} ? onLikeClick('${post._id}', ${numOfLikes}, ${userLiked}) : loginPrompt()`
+              onmouseover=`onLikeHover('over', '${post._id}', ${userLiked});`
+              onmouseout=`onLikeHover('out', '${post._id}', ${userLiked});`
+            ) !{likeButtonState}
+            input.d-block(type='hidden', name='_csrf', value=_csrf)
     if queriedPost
-      .my-4.w-75(style="overflow-wrap: break-word")
+      - var likes = queriedPost.likes ? queriedPost.likes : {};
+      - var userLiked = likes?.[userId] || false;
+      - var likesArray = Object.keys(likes);
+      - var numOfLikes = 0;
+      - var likeButtonState = userLiked ? '&#129505;' : '&#129293;';
+      for userLike in likesArray
+          if likes[userLike]
+            - numOfLikes = numOfLikes + 1
+      .position-relative.my-4.p-1.w-75.border.border-dark.border-2(
+        id=queriedPost._id
+        style="overflow-wrap: break-word"
+      )
         p.m-0.p-0 Created By: #{queriedPost.createdBy.profile.name || queriedPost.createdBy._id}
         p.m-0.p-0 Content:
         div !{queriedPost.content}
-    -
+        form.position-absolute.bottom-0.end-0(
+            id=`likeForm-${queriedPost._id}`
+            method="post"
+            target="hidden-frame"
+          )
+            label.mx-1 !{numOfLikes} !{numOfLikes === 1 ? 'like' : 'likes'}
+            button.like-button(
+              type="button"
+              onclick=`${loggedIn} ? onLikeClick('${queriedPost._id}', ${numOfLikes}, ${userLiked}) : loginPrompt()`
+              onmouseover=`onLikeHover('over', '${queriedPost._id}', ${userLiked});`
+              onmouseout=`onLikeHover('out', '${queriedPost._id}', ${userLiked});`
+            ) !{likeButtonState}
+            input.d-block(type='hidden', name='_csrf', value=_csrf)
     if multiplePages
       form.position-absolute.end-0.bottom-0#changePageForm(method="post" style="width: 70px")
         label Page !{pageNum}
         input.d-block(type='hidden', name='_csrf', value=_csrf)
         .d-flex.justify-content-sm-between
-          -
           if pageNum > 1
             button.fw-bold(type="button", onclick="changePage('prev')", style="width: 30px;") &#8249;
           if !lastPage
             button.fw-bold(type="button", onclick="changePage('next')", style="width: 30px;") &#8250;
+  iframe(name="hidden-frame" style="display: none" onload="reloadPage();")
   script.
     const pageNum = #{pageNum};
     const multiplePages = #{multiplePages};
@@ -52,10 +98,34 @@ block content
       }
     };
     function changePage(pageChangeAction) {
-      //const url = '#{url}';
-      //const pageNum = #{pageNum};
       const changePageForm = document.getElementById('changePageForm');
       const page = pageChangeAction === 'next' ? pageNum + 1 : pageNum - 1;
       changePageForm.action = page > 0 ? `${url}?page=${page}` : url;
       changePageForm.submit();
+    };
+    function onLikeHover(mouseEvent, postId, userLiked) {
+      const likeForm = document.getElementById(`likeForm-${postId}`);
+      const likeButton = likeForm.getElementsByClassName("like-button")[0];
+      if (mouseEvent === 'over') {
+        likeButton.innerHTML = userLiked ? '&#129293;' : '&#129505;';
+      } else {
+        likeButton.innerHTML = userLiked ? '&#129505;' : '&#129293;';
+      }
+    }
+    function reloadPage() {
+      window.location.reload();
+    };
+    function loginPrompt() {
+      alert('You must be logged in to like a post.')
+    }
+    function onLikeClick(postId, numOfLikes, userLiked) {
+      const likeForm = document.getElementById(`likeForm-${postId}`);
+      const likeButton = likeForm.getElementsByClassName("like-button")[0];
+      const totalLikesLabel = likeForm.getElementsByTagName("label")[0];
+      const newNumOfLikes = userLiked ? numOfLikes-1 : numOfLikes+1;
+      likeButton.innerHTML = userLiked ? '&#129505;' : '&#129293;';
+      updatedUserLiked = !userLiked;
+      totalLikesLabel.innerHTML = `${newNumOfLikes} ${newNumOfLikes === 1 ? 'like' : 'likes'}`;
+      likeForm.action = window.location.origin + `/posts/like/${postId}/`;
+      likeForm.submit();
     }
