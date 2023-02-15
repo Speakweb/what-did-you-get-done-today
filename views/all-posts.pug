@@ -20,6 +20,7 @@ block content
         - var likesArray = Object.keys(likes);
         - var numOfLikes = 0;
         - var likeButtonState = userLiked ? '&#129505;' : '&#129293;';
+        - var createdBy = post.createdBy.profile?.name || post.createdBy._id;
         for userLike in likesArray
           if likes[userLike]
             - numOfLikes = numOfLikes + 1
@@ -27,7 +28,7 @@ block content
           id=post._id
           style="overflow-wrap: break-word;"
         )
-          p.m-0.p-0 Created By: #{post.createdBy.profile.name || post.createdBy._id}
+          p.m-0.p-0 Created By: #{createdBy}
           p.m-0.p-0 Content:
           div !{post.content}
           form.position-absolute.bottom-0.end-0(
@@ -49,6 +50,7 @@ block content
       - var likesArray = Object.keys(likes);
       - var numOfLikes = 0;
       - var likeButtonState = userLiked ? '&#129505;' : '&#129293;';
+      - var createdBy = queriedPost.createdBy.profile?.name || queriedPost.createdBy._id;
       for userLike in likesArray
           if likes[userLike]
             - numOfLikes = numOfLikes + 1
@@ -56,7 +58,7 @@ block content
         id=queriedPost._id
         style="overflow-wrap: break-word"
       )
-        p.m-0.p-0 Created By: #{queriedPost.createdBy.profile.name || queriedPost.createdBy._id}
+        p.m-0.p-0 Created By: #{createdBy}
         p.m-0.p-0 Content:
         div !{queriedPost.content}
         form.position-absolute.bottom-0.end-0(
