@@ -131,22 +131,30 @@ exports.postPosts = (req, res) => {
  * POST /posts/like/:postId
  */
 exports.likePost = async (req, res) => {
-    if (!req.user) return res.end(); // todo: give warning that user is not logged in?
+    if (!req.user) return res.end();
     const userId = req.user._id.toString();
     const filter = { _id: mongoose.Types.ObjectId(req.params.postId) };
     const post = await Post.findOne(filter);
     if (post.likes) {
         const likes = JSON.parse(JSON.stringify(post.likes));
         const userLiked = likes[userId] ? !likes[userId] : true;
-        await Post.updateOne(filter, {
-            likes: {
-                ...likes,
-                [userId]: userLiked
-            }
-        });
+        try {
+            await Post.updateOne(filter, {
+                likes: {
+                    ...likes,
+                    [userId]: userLiked
+                }
+            })
+        } catch (err) {
+            res.status(500).send('fail')
+        }
     }
     else {
-        await Post.updateOne(filter, { likes: { [userId]: true } });
+        try {
+            await Post.updateOne(filter, { likes: { [userId]: true } });
+        } catch (err) {
+            res.status(500).send('fail')
+        }
     }
-    res.redirect(req.get('referer')); // reloads current page to show updated post "like" state
+    res.send('success'); // reloads current page to show updated post "like" state
 }

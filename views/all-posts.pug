@@ -34,7 +34,6 @@ block content
           form.position-absolute.bottom-0.end-0(
             id=`likeForm-${post._id}`
             method="post"
-            target="hidden-frame"
           )
             label.mx-1 !{numOfLikes} !{numOfLikes === 1 ? 'like' : 'likes'}
             button.like-button(
@@ -64,7 +63,6 @@ block content
         form.position-absolute.bottom-0.end-0(
             id=`likeForm-${queriedPost._id}`
             method="post"
-            target="hidden-frame"
           )
             label.mx-1 !{numOfLikes} !{numOfLikes === 1 ? 'like' : 'likes'}
             button.like-button(
@@ -83,8 +81,8 @@ block content
             button.fw-bold(type="button", onclick="changePage('prev')", style="width: 30px;") &#8249;
           if !lastPage
             button.fw-bold(type="button", onclick="changePage('next')", style="width: 30px;") &#8250;
-  iframe(name="hidden-frame" style="display: none" onload="reloadPage();")
   script.
+    const _csrf = '#{_csrf}';
     const pageNum = #{pageNum};
     const multiplePages = #{multiplePages};
     const lastPage = #{lastPage};
@@ -114,9 +112,6 @@ block content
         likeButton.innerHTML = userLiked ? '&#129505;' : '&#129293;';
       }
     }
-    function reloadPage() {
-      window.location.reload();
-    };
     function loginPrompt() {
       alert('You must be logged in to like a post.')
     }
@@ -128,6 +123,11 @@ block content
       likeButton.innerHTML = userLiked ? '&#129505;' : '&#129293;';
       updatedUserLiked = !userLiked;
       totalLikesLabel.innerHTML = `${newNumOfLikes} ${newNumOfLikes === 1 ? 'like' : 'likes'}`;
-      likeForm.action = window.location.origin + `/posts/like/${postId}/`;
-      likeForm.submit();
+      $.post(`${window.location.origin}/posts/like/${postId}/`, {_csrf})
+        .done((message) => {
+          if (message === 'success') window.location.reload()
+        })
+        .fail((message) => {
+          alert('Failed to like the post, please try again later.')
+        });
     }
