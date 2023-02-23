@@ -1,4 +1,7 @@
-FROM node:12-slim
+FROM node:16
+
+RUN apt-get update
+RUN apt-get install -y git
 
 WORKDIR /starter
 ENV NODE_ENV development
