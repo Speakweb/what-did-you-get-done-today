@@ -19,6 +19,10 @@ RUN rm -r node_modules/pug-runtime
 
 RUN git clone https://github.com/marvinirwin/pug-debug-wrap node_modules/pug-runtime
 
+WORKDIR /starter/node_modules/pug-runtime
+
+RUN npm install
+
 CMD ["pm2-runtime","app.js"]
 
 EXPOSE 8080
