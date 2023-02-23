@@ -23,6 +23,8 @@ WORKDIR /starter/node_modules/pug-runtime
 
 RUN npm install
 
+WORKDIR /starter
+
 CMD ["pm2-runtime","app.js"]
 
 EXPOSE 8080
