@@ -15,15 +15,15 @@ RUN npm install --production
 COPY .env.example /starter/.env.example
 COPY . /starter
 
-RUN rm -r node_modules/pug-runtime
+# RUN rm -r node_modules/pug-runtime
 
-RUN git clone https://github.com/marvinirwin/pug-debug-wrap node_modules/pug-runtime
+# RUN git clone https://github.com/marvinirwin/pug-debug-wrap node_modules/pug-runtime
 
-WORKDIR /starter/node_modules/pug-runtime
+# WORKDIR /starter/node_modules/pug-runtime
 
 RUN npm install
 
-WORKDIR /starter
+# WORKDIR /starter
 
 CMD ["pm2-runtime","app.js"]
 
